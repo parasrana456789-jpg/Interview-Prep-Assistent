@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Aptitude Test</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background:#f4f7fc;
+padding:20px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+background:white;
+padding:25px;
+border-radius:15px;
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+h1{
+text-align:center;
+margin-bottom:20px;
+color:#333;
+}
+
+select,button{
+width:100%;
+padding:12px;
+margin:10px 0;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:16px;
+}
+
+button{
+background:#2563eb;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+.question-box{
+margin-top:20px;
+padding:20px;
+background:#f8fafc;
+border-radius:10px;
+display:none;
+}
+
+.option{
+padding:12px;
+background:white;
+border:1px solid #ddd;
+border-radius:8px;
+margin:10px 0;
+cursor:pointer;
+}
+
+.option:hover{
+background:#e0f2fe;
+}
+
+.selected{
+background:#2563eb;
+color:white;
+}
+
+.timer{
+text-align:right;
+font-size:20px;
+font-weight:bold;
+color:red;
+margin-bottom:10px;
+}
+
+.progress{
+width:100%;
+height:10px;
+background:#ddd;
+border-radius:20px;
+overflow:hidden;
+margin-bottom:15px;
+}
+
+.progress-bar{
+height:100%;
+width:0%;
+background:green;
+}
+
+.result{
+display:none;
+padding:20px;
+margin-top:20px;
+background:#dcfce7;
+border-radius:10px;
+text-align:center;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>AI Aptitude Test</h1>
+
+<select id="role">
+<option>Java Developer</option>
+<option>Python Developer</option>
+<option>Frontend Developer</option>
+<option>AI/ML Engineer</option>
+<option>Data Analyst</option>
+</select>
+
+<select id="difficulty">
+<option>Basic</option>
+<option>Intermediate</option>
+<option>Advanced</option>
+</select>
+
+<button onclick="startTest()">
+Start Test
+</button>
+
+<div class="question-box" id="questionBox">
+
+<div class="timer" id="timer">
+Time: 60
+</div>
+
+<div class="progress">
+<div class="progress-bar" id="progressBar"></div>
+</div>
+
+<h3 id="question">
+Loading...
+</h3>
+
+<div id="options"></div>
+
+<button onclick="nextQuestion()">
+Next Question
+</button>
+
+</div>
+
+<div class="result" id="result">
+
+<h2>Test Completed</h2>
+
+<h3 id="score"></h3>
+
+</div>
+
+</div>
+
+<script>
+
+const API="http://localhost:5001";
+
+let questions=[];
+let current=0;
+let score=0;
+let selectedAnswer="";
+
+async function startTest(){
+
+const role=document.getElementById("role").value;
+const difficulty=document.getElementById("difficulty").value;
+
+const response=await fetch(
+`${API}/api/aptitude/generate`,
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+role,
+difficulty
+})
+}
+);
+
+questions=await response.json();
+
+document.getElementById("questionBox").style.display="block";
+
+current=0;
+score=0;
+
+loadQuestion();
+
+startTimer();
+
+}
+
+function loadQuestion(){
+
+let q=questions[current];
+
+document.getElementById("question").innerText=
+`Q${current+1}. ${q.question}`;
+
+let html="";
+
+q.options.forEach(option=>{
+
+html+=`
+<div class="option"
+onclick="selectOption(this,'${option}')">
+${option}
+</div>
+`;
+
+});
+
+document.getElementById("options").innerHTML=html;
+
+document.getElementById("progressBar").style.width=
+((current+1)/questions.length)*100+"%";
+
+}
+
+function selectOption(element,answer){
+
+document
+.querySelectorAll(".option")
+.forEach(opt=>opt.classList.remove("selected"));
+
+element.classList.add("selected");
+
+selectedAnswer=answer;
+
+}
+
+async function nextQuestion(){
+
+if(selectedAnswer===questions[current].answer){
+score++;
+}
+
+selectedAnswer="";
+
+current++;
+
+if(current<questions.length){
+
+loadQuestion();
+
+}else{
+
+submitTest();
+
+}
+
+}
+
+async function submitTest(){
+
+document.getElementById("questionBox").style.display="none";
+
+document.getElementById("result").style.display="block";
+
+document.getElementById("score").innerText=
+`Score : ${score} / ${questions.length}`;
+
+await fetch(
+`${API}/api/aptitude/submit`,
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+score,
+total:questions.length
+})
+}
+);
+
+}
+
+let time=60;
+
+function startTimer(){
+
+setInterval(()=>{
+
+if(time>0){
+
+time--;
+
+document.getElementById("timer").innerText=
+"Time : "+time;
+
+}
+
+},1000);
+
+}
+
+</script>
+
+</body>
+</html>

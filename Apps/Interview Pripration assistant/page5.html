@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mock Interview</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f4f4;
+    padding:20px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h1{
+    text-align:center;
+}
+
+select,textarea,button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
+textarea{
+    height:120px;
+}
+
+button{
+    background:#007bff;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#0056b3;
+}
+
+.box{
+    background:#f8f9fa;
+    padding:15px;
+    border-radius:8px;
+    margin-top:15px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>AI Mock Interview</h1>
+
+<label>Select Role</label>
+<select id="role">
+<option>Java Developer</option>
+<option>Python Developer</option>
+<option>Frontend Developer</option>
+<option>AI/ML Engineer</option>
+<option>Data Analyst</option>
+</select>
+
+<label>Select Difficulty</label>
+<select id="difficulty">
+<option>Basic</option>
+<option>Intermediate</option>
+<option>Advanced</option>
+</select>
+
+<label>Interview Type</label>
+<select id="type">
+<option>HR Interview</option>
+<option>Technical Interview</option>
+<option>Mixed Interview</option>
+</select>
+
+<button onclick="startInterview()">
+Start Interview
+</button>
+
+<div class="box">
+<h3>Question</h3>
+<p id="question">Click Start Interview</p>
+</div>
+
+<textarea id="answer"
+placeholder="Type your answer here..."></textarea>
+
+<button onclick="submitAnswer()">
+Submit Answer
+</button>
+
+<div class="box">
+<h3>AI Feedback</h3>
+<p id="feedback">Feedback will appear here</p>
+</div>
+
+<div class="box">
+<h3>Score</h3>
+<p id="score">0 / 100</p>
+</div>
+
+</div>
+
+<script>
+
+const API="http://localhost:5001";
+
+async function startInterview(){
+
+const role=document.getElementById("role").value;
+const difficulty=document.getElementById("difficulty").value;
+const type=document.getElementById("type").value;
+
+const response=await fetch(
+`${API}/api/mock/question`,
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+role,
+difficulty,
+type
+})
+}
+);
+
+const data=await response.json();
+
+document.getElementById("question").innerText=
+data.question;
+}
+
+async function submitAnswer(){
+
+const question=
+document.getElementById("question").innerText;
+
+const answer=
+document.getElementById("answer").value;
+
+const response=await fetch(
+`${API}/api/mock/evaluate`,
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+question,
+answer
+})
+}
+);
+
+const data=await response.json();
+
+document.getElementById("feedback").innerText=
+data.feedback;
+
+document.getElementById("score").innerText=
+data.score + " / 100";
+}
+
+</script>
+
+</body>
+</html>

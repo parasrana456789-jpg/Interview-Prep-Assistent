@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interview Questions</title>
+
+<style>
+body{
+font-family:Arial,sans-serif;
+background:#f4f6f9;
+margin:0;
+padding:20px;
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h1{
+text-align:center;
+}
+
+select,button,textarea{
+width:100%;
+padding:12px;
+margin:10px 0;
+border-radius:5px;
+border:1px solid #ccc;
+}
+
+button{
+background:#007bff;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+button:hover{
+background:#0056b3;
+}
+
+.question-box,
+.feedback-box{
+background:#f8f9fa;
+padding:15px;
+border-radius:8px;
+margin-top:15px;
+}
+
+.score{
+font-size:20px;
+font-weight:bold;
+color:green;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Interview Question Practice</h1>
+
+<select id="role">
+<option>Java Developer</option>
+<option>Python Developer</option>
+<option>Frontend Developer</option>
+<option>AI/ML Engineer</option>
+<option>Data Analyst</option>
+</select>
+
+<select id="difficulty">
+<option>Basic</option>
+<option>Intermediate</option>
+<option>Advanced</option>
+</select>
+
+<button onclick="getQuestion()">
+Get Question
+</button>
+
+<div class="question-box">
+<h3>Question</h3>
+<p id="question">
+Click Get Question
+</p>
+</div>
+
+<textarea
+id="answer"
+placeholder="Write your answer here...">
+</textarea>
+
+<button onclick="submitAnswer()">
+Submit Answer
+</button>
+
+<div class="feedback-box">
+<h3>Feedback</h3>
+<p id="feedback">
+Waiting...
+</p>
+
+<p class="score" id="score">
+0 / 100
+</p>
+</div>
+
+</div>
+
+<script>
+
+const API="http://localhost:5001";
+
+async function getQuestion(){
+
+const role=
+document.getElementById("role").value;
+
+const difficulty=
+document.getElementById("difficulty").value;
+
+const response=await fetch(
+`${API}/api/interview/question`,
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+role,
+difficulty
+})
+}
+);
+
+const data=await response.json();
+
+document.getElementById("question").innerText=
+data.question;
+
+}
+
+async function submitAnswer(){
+
+const question=
+document.getElementById("question").innerText;
+
+const answer=
+document.getElementById("answer").value;
+
+const response=await fetch(
+`${API}/api/interview/submit`,
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+question,
+answer
+})
+}
+);
+
+const data=await response.json();
+
+document.getElementById("feedback").innerText=
+data.feedback;
+
+document.getElementById("score").innerText=
+data.score + "/100";
+
+}
+
+</script>
+
+</body>
+</html>

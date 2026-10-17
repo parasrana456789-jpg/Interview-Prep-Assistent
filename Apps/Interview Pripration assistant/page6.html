@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Resume Builder</title>
+
+<style>
+body{
+font-family:Arial,sans-serif;
+background:#f5f5f5;
+margin:0;
+padding:20px;
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,.1);
+}
+
+h1{
+text-align:center;
+}
+
+input,textarea{
+width:100%;
+padding:10px;
+margin:8px 0;
+border:1px solid #ccc;
+border-radius:5px;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#007bff;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+margin-top:10px;
+}
+
+button:hover{
+background:#0056b3;
+}
+
+.preview{
+margin-top:20px;
+padding:20px;
+background:#fafafa;
+border:1px solid #ddd;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>AI Resume Builder</h1>
+
+<input type="text" id="name" placeholder="Full Name">
+
+<input type="email" id="email" placeholder="Email">
+
+<input type="text" id="phone" placeholder="Phone">
+
+<input type="text" id="linkedin" placeholder="LinkedIn">
+
+<input type="text" id="github" placeholder="GitHub">
+
+<textarea id="objective" placeholder="Career Objective"></textarea>
+
+<textarea id="education" placeholder="Education"></textarea>
+
+<textarea id="skills" placeholder="Skills"></textarea>
+
+<textarea id="projects" placeholder="Projects"></textarea>
+
+<textarea id="internships" placeholder="Internships"></textarea>
+
+<textarea id="certificates" placeholder="Certificates"></textarea>
+
+<button onclick="generateResume()">
+Generate Resume
+</button>
+
+<div class="preview" id="preview">
+Resume Preview
+</div>
+
+</div>
+
+<script>
+
+const API="http://localhost:5001";
+
+async function generateResume(){
+
+const data={
+name:document.getElementById("name").value,
+email:document.getElementById("email").value,
+phone:document.getElementById("phone").value,
+linkedin:document.getElementById("linkedin").value,
+github:document.getElementById("github").value,
+objective:document.getElementById("objective").value,
+education:document.getElementById("education").value,
+skills:document.getElementById("skills").value,
+projects:document.getElementById("projects").value,
+internships:document.getElementById("internships").value,
+certificates:document.getElementById("certificates").value
+};
+
+const response=await fetch(
+`${API}/api/resume/generate`,
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(data)
+}
+);
+
+const result=await response.json();
+
+document.getElementById("preview").innerHTML=
+result.resume;
+
+}
+
+</script>
+
+</body>
+</html>

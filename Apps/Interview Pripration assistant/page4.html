@@ -1,0 +1,350 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Coding Practice</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f7fc;
+}
+
+header{
+background:#1e3a8a;
+color:white;
+text-align:center;
+padding:20px;
+}
+
+.container{
+width:90%;
+max-width:1200px;
+margin:20px auto;
+}
+
+.card{
+background:white;
+padding:20px;
+margin-bottom:20px;
+border-radius:10px;
+box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+select,textarea{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:1px solid #ccc;
+border-radius:8px;
+}
+
+textarea{
+height:300px;
+resize:none;
+}
+
+button{
+background:#2563eb;
+color:white;
+border:none;
+padding:12px 20px;
+border-radius:8px;
+cursor:pointer;
+margin-top:10px;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+.result{
+background:#eef3ff;
+padding:15px;
+margin-top:15px;
+border-radius:10px;
+}
+
+.score{
+font-size:40px;
+font-weight:bold;
+color:#1e3a8a;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>💻 AI Coding Practice</h1>
+<p>Interview Preparation Assistant</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Select Language</h2>
+
+<select id="language">
+<option>Java</option>
+<option>Python</option>
+<option>C++</option>
+<option>JavaScript</option>
+</select>
+
+<button onclick="getQuestion()">
+🎯 Get Question
+</button>
+
+<div class="result">
+<h3>Question</h3>
+<p id="question">
+Click Get Question
+</p>
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Write Code</h2>
+
+<textarea
+id="code"
+placeholder="Write code here...">
+</textarea>
+
+<button onclick="submitCode()">
+🚀 Submit Code
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>Evaluation Result</h2>
+
+<div class="result">
+<h3>Score</h3>
+<div class="score" id="score">0</div>
+</div>
+
+<div class="result">
+<h3>Status</h3>
+<p id="status">Waiting...</p>
+</div>
+
+<div class="result">
+<h3>Difficulty</h3>
+<p id="difficulty">-</p>
+</div>
+
+<div class="result">
+<h3>Feedback</h3>
+<p id="feedback">No Feedback</p>
+</div>
+
+<div class="result">
+<h3>Correct Solution</h3>
+<pre id="solution">
+No Solution
+</pre>
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Progress Report</h2>
+
+<div class="result">
+<p>Total Solved:
+<span id="totalSolved">0</span>
+</p>
+
+<p>Average Score:
+<span id="averageScore">0</span>
+</p>
+
+<p>Highest Score:
+<span id="highestScore">0</span>
+</p>
+</div>
+
+<button onclick="loadProgress()">
+📊 Refresh Progress
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+const API =
+"http://localhost:5001";
+
+async function getQuestion(){
+
+const language =
+document.getElementById(
+"language"
+).value;
+
+try{
+
+const response =
+await fetch(
+`${API}/api/question`,
+{
+method:"POST",
+headers:{
+"Content-Type":
+"application/json"
+},
+body:JSON.stringify({
+language,
+difficulty:"Medium"
+})
+}
+);
+
+const data =
+await response.json();
+
+document.getElementById(
+"question"
+).innerText =
+data.question;
+
+}catch(error){
+
+alert(
+"Failed To Load Question"
+);
+
+}
+
+}
+
+async function submitCode(){
+
+const language =
+document.getElementById(
+"language"
+).value;
+
+const question =
+document.getElementById(
+"question"
+).innerText;
+
+const code =
+document.getElementById(
+"code"
+).value;
+
+try{
+
+const response =
+await fetch(
+`${API}/api/submit`,
+{
+method:"POST",
+headers:{
+"Content-Type":
+"application/json"
+},
+body:JSON.stringify({
+language,
+question,
+code
+})
+}
+);
+
+const data =
+await response.json();
+
+document.getElementById(
+"score"
+).innerText =
+data.evaluation.score;
+
+document.getElementById(
+"status"
+).innerText =
+data.evaluation.status;
+
+document.getElementById(
+"difficulty"
+).innerText =
+data.evaluation.difficulty;
+
+document.getElementById(
+"feedback"
+).innerText =
+data.evaluation.feedback;
+
+document.getElementById(
+"solution"
+).textContent =
+data.evaluation.correctSolution;
+
+loadProgress();
+
+}catch(error){
+
+alert(
+"Submission Failed"
+);
+
+}
+
+}
+
+async function loadProgress(){
+
+const response =
+await fetch(
+`${API}/api/progress`
+);
+
+const data =
+await response.json();
+
+document.getElementById(
+"totalSolved"
+).innerText =
+data.totalSolved;
+
+document.getElementById(
+"averageScore"
+).innerText =
+Math.round(
+data.averageScore
+);
+
+document.getElementById(
+"highestScore"
+).innerText =
+data.highestScore;
+
+}
+
+loadProgress();
+
+</script>
+
+</body>
+</html>
+

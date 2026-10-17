@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+background:#f4f7fc;
+}
+
+.container{
+width:350px;
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+h2{
+text-align:center;
+margin-bottom:20px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:10px 0;
+border:1px solid #ccc;
+border-radius:8px;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+p{
+text-align:center;
+margin-top:15px;
+}
+
+a{
+text-decoration:none;
+color:#2563eb;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h2>Login</h2>
+
+<input
+type="email"
+id="email"
+placeholder="Enter Email">
+
+<input
+type="password"
+id="password"
+placeholder="Enter Password">
+
+<button onclick="login()">
+Login
+</button>
+
+<p>
+Don't have an account?
+<a href="page1.html">
+Signup
+</a>
+</p>
+
+</div>
+
+<script>
+
+const API="http://localhost:5001";
+
+async function login(){
+
+const email =
+document.getElementById("email").value;
+
+const password =
+document.getElementById("password").value;
+
+try{
+
+const response =
+await fetch(
+`${API}/api/auth/login`,
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+email,
+password
+})
+}
+);
+
+const data =
+await response.json();
+
+if(data.success){
+
+alert("Login Successful");
+
+localStorage.setItem(
+"user",
+JSON.stringify(data.user)
+);
+
+window.location.href =
+"page2.html";
+
+}else{
+
+alert(data.message);
+
+}
+
+}catch(error){
+
+alert("Server Error");
+
+console.log(error);
+
+}
+
+}
+
+</script>
+
+</body>
+</html>

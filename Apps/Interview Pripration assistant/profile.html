@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile Page</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background:#f4f7fc;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+
+.container{
+width:90%;
+max-width:800px;
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+.profile-header{
+text-align:center;
+margin-bottom:30px;
+}
+
+.profile-header img{
+width:120px;
+height:120px;
+border-radius:50%;
+object-fit:cover;
+border:4px solid #2563eb;
+}
+
+.profile-header h2{
+margin-top:10px;
+color:#1e293b;
+}
+
+.profile-header p{
+color:gray;
+}
+
+.form-group{
+margin-bottom:15px;
+}
+
+label{
+display:block;
+margin-bottom:5px;
+font-weight:bold;
+}
+
+input, textarea{
+width:100%;
+padding:12px;
+border:1px solid #ccc;
+border-radius:10px;
+outline:none;
+}
+
+textarea{
+resize:none;
+height:100px;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:10px;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="profile-header">
+
+<img src="https://via.placeholder.com/120" id="preview">
+
+<h2>My Profile</h2>
+
+<p>Interview Preparation Assistant</p>
+
+</div>
+
+<form id="profileForm">
+
+<div class="form-group">
+<label>Profile Photo</label>
+<input type="file" id="photo">
+</div>
+
+<div class="form-group">
+<label>Full Name</label>
+<input type="text" id="name">
+</div>
+
+<div class="form-group">
+<label>Email</label>
+<input type="email" id="email">
+</div>
+
+<div class="form-group">
+<label>Phone</label>
+<input type="text" id="phone">
+</div>
+
+<div class="form-group">
+<label>College</label>
+<input type="text" id="college">
+</div>
+
+<div class="form-group">
+<label>Skills</label>
+<input type="text" id="skills">
+</div>
+
+<div class="form-group">
+<label>Bio</label>
+<textarea id="bio"></textarea>
+</div>
+
+<button type="submit">
+Save Profile
+</button>
+
+</form>
+
+</div>
+
+<script>
+
+const API = "http://localhost:5001";
+
+document
+.getElementById("photo")
+.addEventListener("change",function(){
+
+const file=this.files[0];
+
+if(file){
+
+document.getElementById("preview")
+.src=URL.createObjectURL(file);
+
+}
+
+});
+
+document
+.getElementById("profileForm")
+.addEventListener("submit",async(e)=>{
+
+e.preventDefault();
+
+const profileData={
+
+name:
+document.getElementById("name").value,
+
+email:
+document.getElementById("email").value,
+
+phone:
+document.getElementById("phone").value,
+
+college:
+document.getElementById("college").value,
+
+skills:
+document.getElementById("skills").value,
+
+bio:
+document.getElementById("bio").value
+
+};
+
+try{
+
+const response=await fetch(
+`${API}/api/profile/save`,
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(profileData)
+}
+);
+
+const data=await response.json();
+
+alert("Profile Saved Successfully");
+
+}
+catch(error){
+
+alert("Error Saving Profile");
+
+console.log(error);
+
+}
+
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signup</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#f4f7fc;
+}
+
+.container{
+width:400px;
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+h2{
+text-align:center;
+margin-bottom:20px;
+color:#2563eb;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:10px 0;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+p{
+text-align:center;
+margin-top:15px;
+}
+
+a{
+text-decoration:none;
+color:#2563eb;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h2>Create Account</h2>
+
+<input
+type="text"
+id="name"
+placeholder="Enter Full Name">
+
+<input
+type="email"
+id="email"
+placeholder="Enter Email">
+
+<input
+type="password"
+id="password"
+placeholder="Enter Password">
+
+<button onclick="signup()">
+Create Account
+</button>
+
+<p>
+Already have an account?
+<a href="index.html">
+Login
+</a>
+</p>
+
+</div>
+
+<script>
+
+const API = "http://localhost:5001";
+
+async function signup(){
+
+const name =
+document.getElementById("name").value;
+
+const email =
+document.getElementById("email").value;
+
+const password =
+document.getElementById("password").value;
+
+if(!name || !email || !password){
+
+alert("Please fill all fields");
+return;
+
+}
+
+try{
+
+const response =
+await fetch(
+`${API}/api/auth/signup`,
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+name,
+email,
+password
+})
+}
+);
+
+const data =
+await response.json();
+
+if(data.success){
+
+alert("Signup Successful");
+
+window.location.href =
+"index.html";
+
+}else{
+
+alert(data.message);
+
+}
+
+}catch(error){
+
+console.log(error);
+
+alert("Server Error");
+
+}
+
+}
+
+</script>
+
+</body>
+</html>

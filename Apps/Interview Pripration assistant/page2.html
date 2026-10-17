@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f7fc;
+}
+
+.header{
+background:#2563eb;
+color:white;
+padding:20px;
+text-align:center;
+}
+
+.header h1{
+margin-bottom:5px;
+}
+
+.dashboard{
+padding:30px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+text-align:center;
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-5px);
+}
+
+.card h2{
+color:#2563eb;
+margin-bottom:10px;
+}
+
+.card p{
+margin-bottom:15px;
+color:#555;
+}
+
+.card button{
+padding:10px 20px;
+border:none;
+border-radius:8px;
+background:#2563eb;
+color:white;
+cursor:pointer;
+font-size:15px;
+}
+
+.card button:hover{
+background:#1d4ed8;
+}
+
+.profile{
+text-align:right;
+padding:15px;
+}
+
+.profile button{
+padding:10px 15px;
+border:none;
+background:red;
+color:white;
+border-radius:8px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="profile">
+<button onclick="logout()">Logout</button>
+</div>
+
+<div class="header">
+<h1>Interview Preparation Assistant</h1>
+<p>Welcome to your Dashboard</p>
+</div>
+
+<div class="dashboard">
+
+<div class="card">
+<h2>Aptitude Test</h2>
+<p>Practice aptitude questions and improve skills.</p>
+<button onclick="location.href='page3.html'">
+Open
+</button>
+</div>
+
+<div class="card">
+<h2>Coding Practice</h2>
+<p>Solve coding questions and get feedback.</p>
+<button onclick="location.href='page4.html'">
+Open
+</button>
+</div>
+
+<div class="card">
+<h2>Interview Questions</h2>
+<p>Prepare HR and Technical interview questions.</p>
+<button onclick="location.href='page5.html'">
+Open
+</button>
+</div>
+
+<div class="card">
+<h2>Mock Interview</h2>
+<p>Take AI based mock interviews.</p>
+<button onclick="location.href='page7.html'">
+Open
+</button>
+</div>
+
+<div class="card">
+<h2>Resume Builder</h2>
+<p>Create professional resumes.</p>
+<button onclick="location.href='page6.html'">
+Open
+</button>
+</div>
+
+<div class="card">
+<h2>Progress Report</h2>
+<p>Track your overall performance.</p>
+<button onclick="location.href='page8.html'">
+Open
+</button>
+</div>
+
+<div class="card">
+<h2>Profile</h2>
+<p>Manage your personal profile.</p>
+<button onclick="location.href='profile.html'">
+Open
+</button>
+</div>
+
+</div>
+
+<script>
+
+const user =
+JSON.parse(localStorage.getItem("user"));
+
+if(!user){
+
+window.location.href="page1.html";
+
+}
+
+function logout(){
+
+localStorage.removeItem("user");
+
+window.location.href="page1.html";
+
+}
+
+</script>
+
+</body>
+</html>
