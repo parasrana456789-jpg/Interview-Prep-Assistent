@@ -36,6 +36,9 @@ const heavy = rateLimit({ windowMs: 60 * 1000, limit: 20, standardHeaders: true,
 app.use(['/api/aptitude/generate', '/api/coding/generate', '/api/coding/run', '/api/coding/analyze', '/api/coding/submit', '/api/interview/start', '/api/interview/submit', '/api/resume/ai-summary'], heavy);
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', time: new Date().toISOString() }));
+app.get('/', (req, res) => {
+  res.json({ status: 'API is running' });
+});
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/profile', require('./routes/profile.routes'));
 app.use('/api/aptitude', require('./routes/aptitude.routes'));
